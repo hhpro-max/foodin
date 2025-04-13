@@ -1,0 +1,358 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectCartItems, selectCartTotal } from '../../store/slices/cartSlice';
+import { clearCart } from '../../store/slices/cartSlice';
+import { createOrder } from '../../store/slices/orderSlice';
+
+const Checkout = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const items = useSelector(selectCartItems);
+  const total = useSelector(selectCartTotal);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    address: '',
+    city: '',
+    state: '',
+    zipCode: '',
+    cardNumber: '',
+    expiryDate: '',
+    cvv: '',
+  });
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: '',
+      }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.name) newErrors.name = 'Name is required';
+    if (!formData.email) newErrors.email = 'Email is required';
+    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email is invalid';
+    if (!formData.address) newErrors.address = 'Address is required';
+    if (!formData.city) newErrors.city = 'City is required';
+    if (!formData.state) newErrors.state = 'State is required';
+    if (!formData.zipCode) newErrors.zipCode = 'ZIP code is required';
+    if (!formData.cardNumber) newErrors.cardNumber = 'Card number is required';
+    if (!formData.expiryDate) newErrors.expiryDate = 'Expiry date is required';
+    if (!formData.cvv) newErrors.cvv = 'CVV is required';
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    setIsSubmitting(true);
+    try {
+      const orderData = {
+        items: items.map((item) => ({
+          ingredientId: item.id,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+        total,
+        shippingAddress: {
+          name: formData.name,
+          email: formData.email,
+          address: formData.address,
+          city: formData.city,
+          state: formData.state,
+          zipCode: formData.zipCode,
+        },
+      };
+
+      await dispatch(createOrder(orderData)).unwrap();
+      dispatch(clearCart());
+      navigate('/orders');
+    } catch (error) {
+      setErrors((prev) => ({
+        ...prev,
+        submit: error.message || 'Failed to place order. Please try again.',
+      }));
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (items.length === 0) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">Checkout</h1>
+        <div className="mt-8">
+          <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+            <div className="px-4 py-5 sm:p-6">
+              <p className="text-gray-500">Your cart is empty.</p>
+              <div className="mt-6">
+                <button
+                  onClick={() => navigate('/')}
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                  Continue Shopping
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">Checkout</h1>
+      <div className="mt-8">
+        <form onSubmit={handleSubmit} className="space-y-8">
+          <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+            <div className="px-4 py-5 sm:p-6">
+              <h2 className="text-lg font-medium text-gray-900">Shipping Information</h2>
+              <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                <div className="sm:col-span-3">
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                    Full name
+                  </label>
+                  <div className="mt-1">
+                    <input
+                      type="text"
+                      name="name"
+                      id="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ${
+                        errors.name ? 'border-red-300' : ''
+                      }`}
+                    />
+                    {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
+                  </div>
+                </div>
+
+                <div className="sm:col-span-3">
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                    Email
+                  </label>
+                  <div className="mt-1">
+                    <input
+                      type="email"
+                      name="email"
+                      id="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ${
+                        errors.email ? 'border-red-300' : ''
+                      }`}
+                    />
+                    {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
+                  </div>
+                </div>
+
+                <div className="sm:col-span-6">
+                  <label htmlFor="address" className="block text-sm font-medium text-gray-700">
+                    Street address
+                  </label>
+                  <div className="mt-1">
+                    <input
+                      type="text"
+                      name="address"
+                      id="address"
+                      value={formData.address}
+                      onChange={handleChange}
+                      className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ${
+                        errors.address ? 'border-red-300' : ''
+                      }`}
+                    />
+                    {errors.address && <p className="mt-1 text-sm text-red-600">{errors.address}</p>}
+                  </div>
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label htmlFor="city" className="block text-sm font-medium text-gray-700">
+                    City
+                  </label>
+                  <div className="mt-1">
+                    <input
+                      type="text"
+                      name="city"
+                      id="city"
+                      value={formData.city}
+                      onChange={handleChange}
+                      className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ${
+                        errors.city ? 'border-red-300' : ''
+                      }`}
+                    />
+                    {errors.city && <p className="mt-1 text-sm text-red-600">{errors.city}</p>}
+                  </div>
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label htmlFor="state" className="block text-sm font-medium text-gray-700">
+                    State
+                  </label>
+                  <div className="mt-1">
+                    <input
+                      type="text"
+                      name="state"
+                      id="state"
+                      value={formData.state}
+                      onChange={handleChange}
+                      className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ${
+                        errors.state ? 'border-red-300' : ''
+                      }`}
+                    />
+                    {errors.state && <p className="mt-1 text-sm text-red-600">{errors.state}</p>}
+                  </div>
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label htmlFor="zipCode" className="block text-sm font-medium text-gray-700">
+                    ZIP code
+                  </label>
+                  <div className="mt-1">
+                    <input
+                      type="text"
+                      name="zipCode"
+                      id="zipCode"
+                      value={formData.zipCode}
+                      onChange={handleChange}
+                      className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ${
+                        errors.zipCode ? 'border-red-300' : ''
+                      }`}
+                    />
+                    {errors.zipCode && <p className="mt-1 text-sm text-red-600">{errors.zipCode}</p>}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+            <div className="px-4 py-5 sm:p-6">
+              <h2 className="text-lg font-medium text-gray-900">Payment Information</h2>
+              <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                <div className="sm:col-span-6">
+                  <label htmlFor="cardNumber" className="block text-sm font-medium text-gray-700">
+                    Card number
+                  </label>
+                  <div className="mt-1">
+                    <input
+                      type="text"
+                      name="cardNumber"
+                      id="cardNumber"
+                      value={formData.cardNumber}
+                      onChange={handleChange}
+                      className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ${
+                        errors.cardNumber ? 'border-red-300' : ''
+                      }`}
+                    />
+                    {errors.cardNumber && <p className="mt-1 text-sm text-red-600">{errors.cardNumber}</p>}
+                  </div>
+                </div>
+
+                <div className="sm:col-span-3">
+                  <label htmlFor="expiryDate" className="block text-sm font-medium text-gray-700">
+                    Expiry date
+                  </label>
+                  <div className="mt-1">
+                    <input
+                      type="text"
+                      name="expiryDate"
+                      id="expiryDate"
+                      placeholder="MM/YY"
+                      value={formData.expiryDate}
+                      onChange={handleChange}
+                      className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ${
+                        errors.expiryDate ? 'border-red-300' : ''
+                      }`}
+                    />
+                    {errors.expiryDate && <p className="mt-1 text-sm text-red-600">{errors.expiryDate}</p>}
+                  </div>
+                </div>
+
+                <div className="sm:col-span-3">
+                  <label htmlFor="cvv" className="block text-sm font-medium text-gray-700">
+                    CVV
+                  </label>
+                  <div className="mt-1">
+                    <input
+                      type="text"
+                      name="cvv"
+                      id="cvv"
+                      value={formData.cvv}
+                      onChange={handleChange}
+                      className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ${
+                        errors.cvv ? 'border-red-300' : ''
+                      }`}
+                    />
+                    {errors.cvv && <p className="mt-1 text-sm text-red-600">{errors.cvv}</p>}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gray-50 px-4 py-5 sm:p-6 rounded-lg">
+            <h2 className="text-lg font-medium text-gray-900">Order summary</h2>
+            <div className="mt-6 space-y-4">
+              {items.map((item) => (
+                <div key={item.id} className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <img
+                      src={item.image || 'https://via.placeholder.com/150x150?text=No+Image'}
+                      alt={item.name}
+                      className="h-16 w-16 object-center object-cover rounded-md"
+                    />
+                    <div className="ml-4">
+                      <h3 className="text-sm font-medium text-gray-900">{item.name}</h3>
+                      <p className="text-sm text-gray-500">Qty {item.quantity}</p>
+                    </div>
+                  </div>
+                  <p className="text-sm font-medium text-gray-900">
+                    ${(item.price * item.quantity).toFixed(2)}
+                  </p>
+                </div>
+              ))}
+              <div className="border-t border-gray-200 pt-4">
+                <div className="flex items-center justify-between">
+                  <p className="text-base font-medium text-gray-900">Total</p>
+                  <p className="text-base font-medium text-gray-900">${total.toFixed(2)}</p>
+                </div>
+              </div>
+            </div>
+            <div className="mt-6">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full flex justify-center items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? 'Processing...' : 'Place Order'}
+              </button>
+            </div>
+            {errors.submit && (
+              <div className="mt-4">
+                <p className="text-sm text-red-600">{errors.submit}</p>
+              </div>
+            )}
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default Checkout; 
