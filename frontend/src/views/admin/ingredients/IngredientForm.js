@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { addIngredient, editIngredient, fetchIngredientById } from '../../../store/slices/ingredientSlice';
 import { toast } from 'react-toastify';
+import { translations } from '../../../config/translations';
 
 const IngredientForm = () => {
   const navigate = useNavigate();
@@ -40,13 +41,13 @@ const IngredientForm = () => {
   const validateForm = () => {
     const errors = {};
     if (!formData.name.trim()) {
-      errors.name = 'Name is required';
+      errors.name = 'نام ماده غذایی الزامی است';
     }
     if (!formData.price || isNaN(formData.price) || formData.price <= 0) {
-      errors.price = 'Price must be a positive number';
+      errors.price = 'قیمت باید یک عدد مثبت باشد';
     }
     if (!formData.stock || isNaN(formData.stock) || formData.stock < 0) {
-      errors.stock = 'Stock must be a non-negative number';
+      errors.stock = 'موجودی باید یک عدد غیر منفی باشد';
     }
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
@@ -83,14 +84,14 @@ const IngredientForm = () => {
 
       if (id) {
         await dispatch(editIngredient({ id, data: ingredientData })).unwrap();
-        toast.success('Ingredient updated successfully');
+        toast.success('ماده غذایی با موفقیت بروزرسانی شد');
       } else {
         await dispatch(addIngredient(ingredientData)).unwrap();
-        toast.success('Ingredient added successfully');
+        toast.success('ماده غذایی با موفقیت اضافه شد');
       }
       navigate('/admin/ingredients');
     } catch (error) {
-      toast.error(error.message || 'Failed to save ingredient');
+      toast.error('خطا در ذخیره ماده غذایی');
     }
   };
 
@@ -98,7 +99,7 @@ const IngredientForm = () => {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-persian-blue"></div>
         </div>
       </div>
     );
@@ -110,12 +111,12 @@ const IngredientForm = () => {
         <div className="md:col-span-1">
           <div className="px-4 sm:px-0">
             <h3 className="text-lg font-medium leading-6 text-gray-900">
-              {id ? 'Edit Ingredient' : 'Add New Ingredient'}
+              {id ? 'ویرایش ماده غذایی' : 'افزودن ماده غذایی جدید'}
             </h3>
             <p className="mt-1 text-sm text-gray-600">
               {id 
-                ? 'Update the ingredient details below.'
-                : 'Fill in the details to add a new ingredient to the system.'}
+                ? 'اطلاعات ماده غذایی را بروزرسانی کنید.'
+                : 'اطلاعات ماده غذایی جدید را وارد کنید.'}
             </p>
           </div>
         </div>
@@ -126,7 +127,7 @@ const IngredientForm = () => {
               <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                    Name
+                    نام ماده غذایی
                   </label>
                   <div className="mt-1">
                     <input
@@ -135,64 +136,64 @@ const IngredientForm = () => {
                       id="name"
                       value={formData.name}
                       onChange={handleChange}
-                      className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                        formErrors.name ? 'border-red-300' : ''
+                      className={`shadow-sm focus:ring-persian-blue focus:border-persian-blue block w-full sm:text-sm border-gray-300 rounded-md ${
+                        formErrors.name ? 'border-red-500' : ''
                       }`}
                     />
                     {formErrors.name && (
-                      <p className="mt-1 text-sm text-red-600">{formErrors.name}</p>
+                      <p className="mt-2 text-sm text-red-600">{formErrors.name}</p>
                     )}
                   </div>
                 </div>
 
                 <div>
                   <label htmlFor="price" className="block text-sm font-medium text-gray-700">
-                    Price
+                    قیمت
                   </label>
                   <div className="mt-1">
                     <input
                       type="number"
                       name="price"
                       id="price"
-                      step="0.01"
-                      min="0"
                       value={formData.price}
                       onChange={handleChange}
-                      className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                        formErrors.price ? 'border-red-300' : ''
+                      min="0"
+                      step="0.01"
+                      className={`shadow-sm focus:ring-persian-blue focus:border-persian-blue block w-full sm:text-sm border-gray-300 rounded-md ${
+                        formErrors.price ? 'border-red-500' : ''
                       }`}
                     />
                     {formErrors.price && (
-                      <p className="mt-1 text-sm text-red-600">{formErrors.price}</p>
+                      <p className="mt-2 text-sm text-red-600">{formErrors.price}</p>
                     )}
                   </div>
                 </div>
 
                 <div>
                   <label htmlFor="stock" className="block text-sm font-medium text-gray-700">
-                    Stock
+                    موجودی
                   </label>
                   <div className="mt-1">
                     <input
                       type="number"
                       name="stock"
                       id="stock"
-                      min="0"
                       value={formData.stock}
                       onChange={handleChange}
-                      className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                        formErrors.stock ? 'border-red-300' : ''
+                      min="0"
+                      className={`shadow-sm focus:ring-persian-blue focus:border-persian-blue block w-full sm:text-sm border-gray-300 rounded-md ${
+                        formErrors.stock ? 'border-red-500' : ''
                       }`}
                     />
                     {formErrors.stock && (
-                      <p className="mt-1 text-sm text-red-600">{formErrors.stock}</p>
+                      <p className="mt-2 text-sm text-red-600">{formErrors.stock}</p>
                     )}
                   </div>
                 </div>
 
                 <div>
                   <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-                    Description
+                    توضیحات
                   </label>
                   <div className="mt-1">
                     <textarea
@@ -201,26 +202,17 @@ const IngredientForm = () => {
                       rows={3}
                       value={formData.description}
                       onChange={handleChange}
-                      className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                      className="shadow-sm focus:ring-persian-blue focus:border-persian-blue block w-full sm:text-sm border-gray-300 rounded-md"
                     />
                   </div>
                 </div>
               </div>
-
-              <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                <button
-                  type="button"
-                  onClick={() => navigate('/admin/ingredients')}
-                  className="mr-3 inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                  Cancel
-                </button>
+              <div className="px-4 py-3 bg-gray-50 text-left sm:px-6">
                 <button
                   type="submit"
-                  disabled={loading}
-                  className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-persian-blue hover:bg-persian-red focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-persian-blue"
                 >
-                  {loading ? 'Saving...' : id ? 'Update' : 'Create'}
+                  {id ? 'بروزرسانی' : 'ذخیره'}
                 </button>
               </div>
             </div>

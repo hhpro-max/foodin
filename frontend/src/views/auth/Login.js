@@ -5,6 +5,7 @@ import { login } from '../../store/slices/authSlice';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import Alert from '../../components/Alert';
+import { translations } from '../../config/translations';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -38,13 +39,13 @@ const Login = () => {
     const newErrors = {};
     
     if (!formData.email) {
-      newErrors.email = 'Email is required';
+      newErrors.email = 'ایمیل الزامی است';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = 'لطفا یک ایمیل معتبر وارد کنید';
     }
     
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = 'رمز عبور الزامی است';
     }
     
     setErrors(newErrors);
@@ -65,13 +66,13 @@ const Login = () => {
       } else {
         setAlert({
           type: 'error',
-          message: resultAction.payload || 'Login failed'
+          message: resultAction.payload || 'ورود ناموفق بود'
         });
       }
     } catch (error) {
       setAlert({
         type: 'error',
-        message: error.message || 'An error occurred during login'
+        message: error.message || 'خطایی در هنگام ورود رخ داد'
       });
     }
   };
@@ -81,15 +82,15 @@ const Login = () => {
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Sign in to your account
+            ورود به حساب کاربری
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Or{' '}
+            یا{' '}
             <Link
               to="/register"
-              className="font-medium text-blue-600 hover:text-blue-500"
+              className="font-medium text-persian-blue hover:text-persian-red"
             >
-              create a new account
+              ایجاد حساب جدید
             </Link>
           </p>
         </div>
@@ -105,7 +106,7 @@ const Login = () => {
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
             <Input
-              label="Email address"
+              label="ایمیل"
               type="email"
               name="email"
               value={formData.email}
@@ -114,7 +115,7 @@ const Login = () => {
               required
             />
             <Input
-              label="Password"
+              label="رمز عبور"
               type="password"
               name="password"
               value={formData.password}
@@ -130,7 +131,7 @@ const Login = () => {
               className="w-full"
               disabled={loading}
             >
-              {loading ? 'Signing in...' : 'Sign in'}
+              {loading ? 'در حال ورود...' : 'ورود'}
             </Button>
           </div>
         </form>

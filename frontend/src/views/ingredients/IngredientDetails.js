@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchIngredientById } from '../../store/slices/ingredientSlice';
 import { addItem } from '../../store/slices/cartSlice';
 import { toast } from 'react-toastify';
+import { translations } from '../../config/translations';
 
 const IngredientDetails = () => {
   const { id } = useParams();
@@ -26,14 +27,14 @@ const IngredientDetails = () => {
         price: parseFloat(ingredient.price),
         quantity: parseInt(quantity)
       }));
-      toast.success(`${quantity} ${ingredient.name} added to cart`);
+      toast.success(`${quantity} ${ingredient.name} به سبد خرید اضافه شد`);
     }
   };
 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-persian-blue"></div>
       </div>
     );
   }
@@ -42,12 +43,12 @@ const IngredientDetails = () => {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-          <strong className="font-bold">Error!</strong>
+          <strong className="font-bold">خطا!</strong>
           <span className="block sm:inline"> {error}</span>
         </div>
         <div className="mt-4">
-          <Link to="/" className="text-indigo-600 hover:text-indigo-900">
-            Return to Home
+          <Link to="/" className="text-persian-blue hover:text-persian-red">
+            بازگشت به صفحه اصلی
           </Link>
         </div>
       </div>
@@ -58,12 +59,12 @@ const IngredientDetails = () => {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative" role="alert">
-          <strong className="font-bold">Not Found!</strong>
-          <span className="block sm:inline"> The ingredient you're looking for doesn't exist.</span>
+          <strong className="font-bold">یافت نشد!</strong>
+          <span className="block sm:inline"> ماده غذایی مورد نظر شما وجود ندارد.</span>
         </div>
         <div className="mt-4">
-          <Link to="/" className="text-indigo-600 hover:text-indigo-900">
-            Return to Home
+          <Link to="/" className="text-persian-blue hover:text-persian-red">
+            بازگشت به صفحه اصلی
           </Link>
         </div>
       </div>
@@ -91,33 +92,33 @@ const IngredientDetails = () => {
         <div className="mt-10 px-4 sm:px-0 sm:mt-16 lg:mt-0">
           <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">{ingredient.name}</h1>
           <div className="mt-3">
-            <h2 className="sr-only">Ingredient information</h2>
+            <h2 className="sr-only">اطلاعات ماده غذایی</h2>
             <p className="text-3xl text-gray-900">
               ${typeof ingredient.price === 'number' ? ingredient.price.toFixed(2) : '0.00'}
             </p>
           </div>
 
           <div className="mt-6">
-            <h3 className="sr-only">Description</h3>
+            <h3 className="sr-only">توضیحات</h3>
             <div className="text-base text-gray-700 space-y-6">
               {ingredient.description && (
                 <p className="text-gray-500">{ingredient.description}</p>
               )}
-              <p>Category: {ingredient.category || 'N/A'}</p>
-              <p>Stock: {ingredient.stock || 0} units</p>
-              <p>Availability: <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${isAvailable ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                {isAvailable ? 'In Stock' : 'Out of Stock'}
+              <p>دسته‌بندی: {ingredient.category || 'نامشخص'}</p>
+              <p>موجودی: {ingredient.stock || 0} عدد</p>
+              <p>وضعیت: <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${isAvailable ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                {isAvailable ? 'موجود' : 'ناموجود'}
               </span></p>
             </div>
           </div>
 
-          <div className="mt-8 flex">
+          <div className="mt-8">
             <div className="flex items-center">
-              <label htmlFor="quantity" className="mr-3 text-sm font-medium text-gray-700">Quantity</label>
+              <label htmlFor="quantity" className="mr-3 text-sm font-medium text-gray-700">تعداد</label>
               <select
                 id="quantity"
                 name="quantity"
-                className="rounded-md border border-gray-300 py-1.5 text-base leading-5 font-medium text-gray-700 text-left shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="rounded-md border border-gray-300 py-1.5 text-base leading-5 font-medium text-gray-700 text-left shadow-sm focus:outline-none focus:ring-1 focus:ring-persian-blue focus:border-persian-blue sm:text-sm"
                 value={quantity}
                 onChange={(e) => setQuantity(parseInt(e.target.value))}
                 disabled={!isAvailable}
@@ -136,19 +137,19 @@ const IngredientDetails = () => {
               type="button"
               onClick={handleAddToCart}
               disabled={!isAvailable || !hasEnoughStock}
-              className={`w-full bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
+              className={`w-full bg-persian-blue border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-persian-red focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-persian-blue ${
                 !isAvailable || !hasEnoughStock ? 'opacity-50 cursor-not-allowed' : ''
               }`}
             >
-              Add to cart
+              افزودن به سبد خرید
             </button>
           </div>
 
           {!isAvailable && (
-            <p className="mt-2 text-sm text-red-600">This ingredient is currently out of stock.</p>
+            <p className="mt-2 text-sm text-red-600">این ماده غذایی در حال حاضر موجود نیست.</p>
           )}
           {isAvailable && !hasEnoughStock && (
-            <p className="mt-2 text-sm text-red-600">Not enough stock available. Only {ingredient.stock} units left.</p>
+            <p className="mt-2 text-sm text-red-600">موجودی کافی نیست. فقط {ingredient.stock} عدد باقی مانده است.</p>
           )}
         </div>
       </div>

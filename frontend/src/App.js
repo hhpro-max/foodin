@@ -2,8 +2,10 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { CartProvider } from './contexts/CartContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import '@fontsource/vazirmatn';
 
 // Layouts
 import DefaultLayout from './layouts/DefaultLayout';
@@ -56,68 +58,75 @@ const GuestRoute = ({ children }) => {
 
 function App() {
   return (
-    <CartProvider>
-      <Router>
-        <ToastContainer position="top-right" autoClose={3000} />
-        <Routes>
-          {/* Public routes */}
-          <Route path="/" element={<DefaultLayout />}>
-            <Route index element={<Home />} />
-            <Route path="login" element={
-              <GuestRoute>
-                <Login />
-              </GuestRoute>
-            } />
-            <Route path="register" element={
-              <GuestRoute>
-                <Register />
-              </GuestRoute>
-            } />
-            <Route path="ingredients" element={<IngredientList />} />
-            <Route path="ingredients/:id" element={<IngredientDetails />} />
-            <Route path="cart" element={
-              <PrivateRoute>
-                <Cart />
-              </PrivateRoute>
-            } />
-            <Route path="checkout" element={
-              <PrivateRoute>
-                <Checkout />
-              </PrivateRoute>
-            } />
-            <Route path="orders" element={
-              <PrivateRoute>
-                <OrderHistory />
-              </PrivateRoute>
-            } />
-            <Route path="orders/:id" element={
-              <PrivateRoute>
-                <OrderDetails />
-              </PrivateRoute>
-            } />
-            <Route path="profile" element={
-              <PrivateRoute>
-                <Profile />
-              </PrivateRoute>
-            } />
-            <Route path="test" element={<TestPage />} />
-          </Route>
+    <ThemeProvider>
+      <CartProvider>
+        <Router>
+          <ToastContainer 
+            position="top-right" 
+            autoClose={3000}
+            rtl={true}
+            theme="colored"
+          />
+          <Routes>
+            {/* Public routes */}
+            <Route path="/" element={<DefaultLayout />}>
+              <Route index element={<Home />} />
+              <Route path="login" element={
+                <GuestRoute>
+                  <Login />
+                </GuestRoute>
+              } />
+              <Route path="register" element={
+                <GuestRoute>
+                  <Register />
+                </GuestRoute>
+              } />
+              <Route path="ingredients" element={<IngredientList />} />
+              <Route path="ingredients/:id" element={<IngredientDetails />} />
+              <Route path="cart" element={
+                <PrivateRoute>
+                  <Cart />
+                </PrivateRoute>
+              } />
+              <Route path="checkout" element={
+                <PrivateRoute>
+                  <Checkout />
+                </PrivateRoute>
+              } />
+              <Route path="orders" element={
+                <PrivateRoute>
+                  <OrderHistory />
+                </PrivateRoute>
+              } />
+              <Route path="orders/:id" element={
+                <PrivateRoute>
+                  <OrderDetails />
+                </PrivateRoute>
+              } />
+              <Route path="profile" element={
+                <PrivateRoute>
+                  <Profile />
+                </PrivateRoute>
+              } />
+              <Route path="test" element={<TestPage />} />
+            </Route>
 
-          {/* Admin routes */}
-          <Route path="/admin" element={
-            <PrivateRoute requiresAdmin>
-              <AdminLayout />
-            </PrivateRoute>
-          }>
-            <Route index element={<AdminDashboard />} />
-            <Route path="ingredients" element={<AdminIngredientList />} />
-            <Route path="ingredients/new" element={<IngredientForm />} />
-            <Route path="ingredients/:id/edit" element={<IngredientForm />} />
-            <Route path="orders" element={<OrderList />} />
-          </Route>
-        </Routes>
-      </Router>
-    </CartProvider>
+            {/* Admin routes */}
+            <Route path="/admin" element={
+              <PrivateRoute requiresAdmin>
+                <AdminLayout />
+              </PrivateRoute>
+            }>
+              <Route index element={<AdminDashboard />} />
+              <Route path="ingredients" element={<AdminIngredientList />} />
+              <Route path="ingredients/new" element={<IngredientForm />} />
+              <Route path="ingredients/:id/edit" element={<IngredientForm />} />
+              <Route path="orders" element={<OrderList />} />
+            </Route>
+          </Routes>
+        </Router>
+      </CartProvider>
+    </ThemeProvider>
   );
 }
 

@@ -2,8 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchIngredients } from '../store/slices/ingredientSlice';
 import ProductCard from '../components/ProductCard';
+import { translations } from '../config/translations';
 
-const CATEGORIES = ['dairy', 'meat', 'vegetables', 'spices', 'grains', 'other'];
+const CATEGORIES = [
+  { id: 'dairy', name: 'لبنیات' },
+  { id: 'meat', name: 'گوشت' },
+  { id: 'vegetables', name: 'سبزیجات' },
+  { id: 'spices', name: 'ادویه‌جات' },
+  { id: 'grains', name: 'غلات' },
+  { id: 'other', name: 'سایر' }
+];
 
 const Home = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -31,7 +39,7 @@ const Home = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-persian-gold"></div>
       </div>
     );
   }
@@ -39,8 +47,8 @@ const Home = () => {
   if (error) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <div className="text-red-500 text-center">
-          <p className="text-xl font-semibold">Error loading ingredients</p>
+        <div className="text-persian-red text-center">
+          <p className="text-xl font-semibold">خطا در بارگذاری مواد غذایی</p>
           <p className="text-sm">{error}</p>
         </div>
       </div>
@@ -55,24 +63,24 @@ const Home = () => {
           <div className="flex-1">
             <input
               type="text"
-              placeholder="Search ingredients..."
+              placeholder="جستجوی مواد غذایی..."
               value={searchTerm}
               onChange={handleSearch}
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-persian-gold focus:border-transparent"
             />
           </div>
           <div className="flex flex-wrap gap-2">
             {CATEGORIES.map((category) => (
               <button
-                key={category}
-                onClick={() => handleCategorySelect(category)}
+                key={category.id}
+                onClick={() => handleCategorySelect(category.id)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 ${
-                  selectedCategory === category
-                    ? 'bg-yellow-500 text-white'
-                    : 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'
+                  selectedCategory === category.id
+                    ? 'bg-persian-blue text-white'
+                    : 'bg-persian-light text-persian-blue hover:bg-persian-gold hover:text-white'
                 }`}
               >
-                {category.charAt(0).toUpperCase() + category.slice(1)}
+                {category.name}
               </button>
             ))}
           </div>
@@ -88,7 +96,7 @@ const Home = () => {
         </div>
       ) : (
         <div className="text-center py-12">
-          <p className="text-gray-500 text-lg">No ingredients found</p>
+          <p className="text-gray-500 text-lg">هیچ ماده غذایی یافت نشد</p>
         </div>
       )}
     </div>

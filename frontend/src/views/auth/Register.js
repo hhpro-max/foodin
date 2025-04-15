@@ -5,6 +5,7 @@ import { register } from '../../store/slices/authSlice';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import Alert from '../../components/Alert';
+import { translations } from '../../config/translations';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -59,45 +60,45 @@ const Register = () => {
     const newErrors = {};
     
     if (!formData.name) {
-      newErrors.name = 'Name is required';
+      newErrors.name = 'نام الزامی است';
     }
     
     if (!formData.email) {
-      newErrors.email = 'Email is required';
+      newErrors.email = 'ایمیل الزامی است';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = 'لطفا یک ایمیل معتبر وارد کنید';
     }
     
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = 'رمز عبور الزامی است';
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = 'رمز عبور باید حداقل ۶ کاراکتر باشد';
     }
     
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your password';
+      newErrors.confirmPassword = 'لطفا رمز عبور را تایید کنید';
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = 'رمز عبور و تکرار آن مطابقت ندارند';
     }
     
     if (!formData.address.street) {
-      newErrors['address.street'] = 'Street address is required';
+      newErrors['address.street'] = 'آدرس خیابان الزامی است';
     }
     
     if (!formData.address.city) {
-      newErrors['address.city'] = 'City is required';
+      newErrors['address.city'] = 'شهر الزامی است';
     }
     
     if (!formData.address.state) {
-      newErrors['address.state'] = 'State is required';
+      newErrors['address.state'] = 'استان الزامی است';
     }
     
     if (!formData.address.zipCode) {
-      newErrors['address.zipCode'] = 'ZIP code is required';
+      newErrors['address.zipCode'] = 'کد پستی الزامی است';
     }
     
     if (!formData.address.country) {
-      newErrors['address.country'] = 'Country is required';
+      newErrors['address.country'] = 'کشور الزامی است';
     }
     
     setErrors(newErrors);
@@ -119,13 +120,13 @@ const Register = () => {
       } else {
         setAlert({
           type: 'error',
-          message: resultAction.payload || 'Registration failed'
+          message: resultAction.payload || 'ثبت نام ناموفق بود'
         });
       }
     } catch (error) {
       setAlert({
         type: 'error',
-        message: error.message || 'An error occurred during registration'
+        message: error.message || 'خطایی در هنگام ثبت نام رخ داد'
       });
     }
   };
@@ -135,15 +136,15 @@ const Register = () => {
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Create your account
+            ایجاد حساب کاربری
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Or{' '}
+            یا{' '}
             <Link
               to="/login"
-              className="font-medium text-blue-600 hover:text-blue-500"
+              className="font-medium text-persian-blue hover:text-persian-red"
             >
-              sign in to your account
+              ورود به حساب کاربری
             </Link>
           </p>
         </div>
@@ -159,7 +160,7 @@ const Register = () => {
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
             <Input
-              label="Full name"
+              label="نام کامل"
               type="text"
               name="name"
               value={formData.name}
@@ -168,7 +169,7 @@ const Register = () => {
               required
             />
             <Input
-              label="Email address"
+              label="ایمیل"
               type="email"
               name="email"
               value={formData.email}
@@ -177,7 +178,7 @@ const Register = () => {
               required
             />
             <Input
-              label="Password"
+              label="رمز عبور"
               type="password"
               name="password"
               value={formData.password}
@@ -186,7 +187,7 @@ const Register = () => {
               required
             />
             <Input
-              label="Confirm password"
+              label="تکرار رمز عبور"
               type="password"
               name="confirmPassword"
               value={formData.confirmPassword}
@@ -195,7 +196,7 @@ const Register = () => {
               required
             />
             <Input
-              label="Street address"
+              label="آدرس خیابان"
               type="text"
               name="address.street"
               value={formData.address.street}
@@ -204,7 +205,7 @@ const Register = () => {
               required
             />
             <Input
-              label="City"
+              label="شهر"
               type="text"
               name="address.city"
               value={formData.address.city}
@@ -213,7 +214,7 @@ const Register = () => {
               required
             />
             <Input
-              label="State"
+              label="استان"
               type="text"
               name="address.state"
               value={formData.address.state}
@@ -222,7 +223,7 @@ const Register = () => {
               required
             />
             <Input
-              label="ZIP code"
+              label="کد پستی"
               type="text"
               name="address.zipCode"
               value={formData.address.zipCode}
@@ -231,7 +232,7 @@ const Register = () => {
               required
             />
             <Input
-              label="Country"
+              label="کشور"
               type="text"
               name="address.country"
               value={formData.address.country}
@@ -247,7 +248,7 @@ const Register = () => {
               className="w-full"
               disabled={loading}
             >
-              {loading ? 'Creating account...' : 'Create account'}
+              {loading ? 'در حال ایجاد حساب...' : 'ایجاد حساب'}
             </Button>
           </div>
         </form>

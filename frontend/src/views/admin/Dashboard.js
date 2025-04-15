@@ -3,11 +3,12 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchIngredients } from '../../store/slices/ingredientSlice';
 import { fetchOrders } from '../../store/slices/orderSlice';
+import { translations } from '../../config/translations';
 
 const Dashboard = () => {
   const dispatch = useDispatch();
-  const { ingredients, loading: ingredientsLoading } = useSelector((state) => state.ingredients);
-  const { orders, loading: ordersLoading } = useSelector((state) => state.orders);
+  const { items: ingredients = [], loading: ingredientsLoading } = useSelector((state) => state.ingredients);
+  const { items: orders = [], loading: ordersLoading } = useSelector((state) => state.orders);
 
   useEffect(() => {
     dispatch(fetchIngredients());
@@ -16,7 +17,7 @@ const Dashboard = () => {
 
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString(undefined, options);
+    return new Date(dateString).toLocaleDateString('fa-IR', options);
   };
 
   const getStatusColor = (status) => {
@@ -36,6 +37,23 @@ const Dashboard = () => {
     }
   };
 
+  const getStatusText = (status) => {
+    switch (status) {
+      case 'pending':
+        return 'در انتظار';
+      case 'processing':
+        return 'در حال پردازش';
+      case 'shipped':
+        return 'ارسال شده';
+      case 'delivered':
+        return 'تحویل داده شده';
+      case 'cancelled':
+        return 'لغو شده';
+      default:
+        return status;
+    }
+  };
+
   const getOrderStatusCount = (status) => {
     return orders.filter(order => order.status === status).length;
   };
@@ -52,7 +70,7 @@ const Dashboard = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">Admin Dashboard</h1>
+      <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">داشبورد مدیریت</h1>
       
       <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {/* Stats Cards */}
@@ -64,9 +82,9 @@ const Dashboard = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
               </div>
-              <div className="ml-5 w-0 flex-1">
+              <div className="mr-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">Total Orders</dt>
+                  <dt className="text-sm font-medium text-gray-500 truncate">کل سفارش‌ها</dt>
                   <dd className="flex items-baseline">
                     <div className="text-2xl font-semibold text-gray-900">{totalOrders}</div>
                   </dd>
@@ -76,8 +94,8 @@ const Dashboard = () => {
           </div>
           <div className="bg-gray-50 px-5 py-3">
             <div className="text-sm">
-              <Link to="/admin/orders" className="font-medium text-indigo-600 hover:text-indigo-900">
-                View all orders
+              <Link to="/admin/orders" className="font-medium text-persian-gold hover:text-persian-red">
+                مشاهده همه سفارش‌ها
               </Link>
             </div>
           </div>
@@ -91,9 +109,9 @@ const Dashboard = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                 </svg>
               </div>
-              <div className="ml-5 w-0 flex-1">
+              <div className="mr-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">Total Ingredients</dt>
+                  <dt className="text-sm font-medium text-gray-500 truncate">کل مواد غذایی</dt>
                   <dd className="flex items-baseline">
                     <div className="text-2xl font-semibold text-gray-900">{totalIngredients}</div>
                   </dd>
@@ -103,8 +121,8 @@ const Dashboard = () => {
           </div>
           <div className="bg-gray-50 px-5 py-3">
             <div className="text-sm">
-              <Link to="/admin/ingredients" className="font-medium text-indigo-600 hover:text-indigo-900">
-                View all ingredients
+              <Link to="/admin/ingredients" className="font-medium text-persian-gold hover:text-persian-red">
+                مشاهده همه مواد غذایی
               </Link>
             </div>
           </div>
@@ -118,9 +136,9 @@ const Dashboard = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <div className="ml-5 w-0 flex-1">
+              <div className="mr-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">Total Revenue</dt>
+                  <dt className="text-sm font-medium text-gray-500 truncate">درآمد کل</dt>
                   <dd className="flex items-baseline">
                     <div className="text-2xl font-semibold text-gray-900">${totalRevenue.toFixed(2)}</div>
                   </dd>
@@ -130,8 +148,8 @@ const Dashboard = () => {
           </div>
           <div className="bg-gray-50 px-5 py-3">
             <div className="text-sm">
-              <Link to="/admin/orders" className="font-medium text-indigo-600 hover:text-indigo-900">
-                View details
+              <Link to="/admin/orders" className="font-medium text-persian-gold hover:text-persian-red">
+                مشاهده جزئیات
               </Link>
             </div>
           </div>
@@ -145,9 +163,9 @@ const Dashboard = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <div className="ml-5 w-0 flex-1">
+              <div className="mr-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">Pending Orders</dt>
+                  <dt className="text-sm font-medium text-gray-500 truncate">سفارش‌های در انتظار</dt>
                   <dd className="flex items-baseline">
                     <div className="text-2xl font-semibold text-gray-900">{pendingOrders}</div>
                   </dd>
@@ -157,30 +175,24 @@ const Dashboard = () => {
           </div>
           <div className="bg-gray-50 px-5 py-3">
             <div className="text-sm">
-              <Link to="/admin/orders" className="font-medium text-indigo-600 hover:text-indigo-900">
-                Process orders
+              <Link to="/admin/orders" className="font-medium text-persian-gold hover:text-persian-red">
+                پردازش سفارش‌ها
               </Link>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-2">
-        {/* Recent Orders */}
+      {/* Recent Orders */}
+      <div className="mt-8">
         <div className="bg-white shadow overflow-hidden sm:rounded-lg">
           <div className="px-4 py-5 sm:px-6">
-            <h2 className="text-lg font-medium text-gray-900">Recent Orders</h2>
+            <h2 className="text-lg font-medium text-gray-900">سفارش‌های اخیر</h2>
           </div>
           <div className="border-t border-gray-200">
-            {ordersLoading ? (
-              <div className="px-4 py-5 sm:p-6">
-                <div className="flex justify-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500"></div>
-                </div>
-              </div>
-            ) : orders.length === 0 ? (
-              <div className="px-4 py-5 sm:p-6">
-                <p className="text-gray-500">No orders found.</p>
+            {orders.length === 0 ? (
+              <div className="px-4 py-5 sm:px-6">
+                <p className="text-gray-500">هیچ سفارشی یافت نشد.</p>
               </div>
             ) : (
               <ul className="divide-y divide-gray-200">
@@ -188,31 +200,31 @@ const Dashboard = () => {
                   <li key={order.id} className="px-4 py-4 sm:px-6">
                     <div className="flex items-center justify-between">
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-indigo-600 truncate">
-                          Order #{order.id}
+                        <p className="text-sm font-medium text-persian-gold truncate">
+                          سفارش #{order.id}
                         </p>
                         <p className="mt-1 text-sm text-gray-500">
-                          Placed on {formatDate(order.createdAt)}
+                          ثبت شده در {formatDate(order.createdAt)}
                         </p>
                       </div>
-                      <div className="ml-4 flex-shrink-0">
+                      <div className="mr-4 flex-shrink-0">
                         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(order.status)}`}>
-                          {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                          {getStatusText(order.status)}
                         </span>
                       </div>
                     </div>
                     <div className="mt-2 sm:flex sm:justify-between">
                       <div className="sm:flex">
                         <p className="flex items-center text-sm text-gray-500">
-                          Total: ${order.total.toFixed(2)}
+                          مجموع: ${order.total.toFixed(2)}
                         </p>
                       </div>
                       <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
                         <Link
                           to={`/admin/orders/${order.id}`}
-                          className="text-indigo-600 hover:text-indigo-900"
+                          className="text-persian-gold hover:text-persian-red"
                         >
-                          View Details
+                          مشاهده جزئیات
                         </Link>
                       </div>
                     </div>
@@ -221,19 +233,19 @@ const Dashboard = () => {
               </ul>
             )}
           </div>
-          <div className="bg-gray-50 px-4 py-4 sm:px-6">
+          <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
             <div className="text-sm">
-              <Link to="/admin/orders" className="font-medium text-indigo-600 hover:text-indigo-900">
-                View all orders
+              <Link to="/admin/orders" className="font-medium text-persian-gold hover:text-persian-red">
+                مشاهده همه سفارش‌ها
               </Link>
             </div>
           </div>
         </div>
 
         {/* Order Status Summary */}
-        <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+        <div className="mt-8 bg-white shadow overflow-hidden sm:rounded-lg">
           <div className="px-4 py-5 sm:px-6">
-            <h2 className="text-lg font-medium text-gray-900">Order Status Summary</h2>
+            <h2 className="text-lg font-medium text-gray-900">خلاصه وضعیت سفارش‌ها</h2>
           </div>
           <div className="border-t border-gray-200">
             <ul className="divide-y divide-gray-200">
@@ -242,14 +254,14 @@ const Dashboard = () => {
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
                       <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                        Pending
+                        در انتظار
                       </span>
                     </div>
-                    <div className="ml-4">
-                      <div className="text-sm font-medium text-gray-900">{pendingOrders} orders</div>
+                    <div className="mr-4">
+                      <div className="text-sm font-medium text-gray-900">{pendingOrders} سفارش</div>
                     </div>
                   </div>
-                  <div className="ml-4 flex-shrink-0">
+                  <div className="mr-4 flex-shrink-0">
                     <div className="text-sm text-gray-500">{Math.round((pendingOrders / totalOrders) * 100) || 0}%</div>
                   </div>
                 </div>
@@ -259,14 +271,14 @@ const Dashboard = () => {
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
                       <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                        Processing
+                        در حال پردازش
                       </span>
                     </div>
-                    <div className="ml-4">
-                      <div className="text-sm font-medium text-gray-900">{processingOrders} orders</div>
+                    <div className="mr-4">
+                      <div className="text-sm font-medium text-gray-900">{processingOrders} سفارش</div>
                     </div>
                   </div>
-                  <div className="ml-4 flex-shrink-0">
+                  <div className="mr-4 flex-shrink-0">
                     <div className="text-sm text-gray-500">{Math.round((processingOrders / totalOrders) * 100) || 0}%</div>
                   </div>
                 </div>
@@ -276,14 +288,14 @@ const Dashboard = () => {
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
                       <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                        Shipped
+                        ارسال شده
                       </span>
                     </div>
-                    <div className="ml-4">
-                      <div className="text-sm font-medium text-gray-900">{shippedOrders} orders</div>
+                    <div className="mr-4">
+                      <div className="text-sm font-medium text-gray-900">{shippedOrders} سفارش</div>
                     </div>
                   </div>
-                  <div className="ml-4 flex-shrink-0">
+                  <div className="mr-4 flex-shrink-0">
                     <div className="text-sm text-gray-500">{Math.round((shippedOrders / totalOrders) * 100) || 0}%</div>
                   </div>
                 </div>
@@ -293,14 +305,14 @@ const Dashboard = () => {
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
                       <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                        Delivered
+                        تحویل داده شده
                       </span>
                     </div>
-                    <div className="ml-4">
-                      <div className="text-sm font-medium text-gray-900">{deliveredOrders} orders</div>
+                    <div className="mr-4">
+                      <div className="text-sm font-medium text-gray-900">{deliveredOrders} سفارش</div>
                     </div>
                   </div>
-                  <div className="ml-4 flex-shrink-0">
+                  <div className="mr-4 flex-shrink-0">
                     <div className="text-sm text-gray-500">{Math.round((deliveredOrders / totalOrders) * 100) || 0}%</div>
                   </div>
                 </div>
@@ -310,14 +322,14 @@ const Dashboard = () => {
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
                       <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                        Cancelled
+                        لغو شده
                       </span>
                     </div>
-                    <div className="ml-4">
-                      <div className="text-sm font-medium text-gray-900">{cancelledOrders} orders</div>
+                    <div className="mr-4">
+                      <div className="text-sm font-medium text-gray-900">{cancelledOrders} سفارش</div>
                     </div>
                   </div>
-                  <div className="ml-4 flex-shrink-0">
+                  <div className="mr-4 flex-shrink-0">
                     <div className="text-sm text-gray-500">{Math.round((cancelledOrders / totalOrders) * 100) || 0}%</div>
                   </div>
                 </div>
