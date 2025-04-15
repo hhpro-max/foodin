@@ -115,7 +115,7 @@ const OrderHistory = () => {
                   <div className="mt-2 sm:flex sm:justify-between">
                     <div className="sm:flex">
                       <p className="flex items-center text-sm text-gray-500">
-                        {translations.fa.total}: ${order.totalAmount.toFixed(2)}
+                        {translations.fa.total}: ${(order.totalAmount ?? 0).toFixed(2)}
                       </p>
                     </div>
                     <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">

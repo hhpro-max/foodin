@@ -55,7 +55,7 @@ const Dashboard = () => {
   };
 
   const getOrderStatusCount = (status) => {
-    return orders.filter(order => order.status === status).length;
+    return orders.filter(order => order && order.status === status).length;
   };
 
   const pendingOrders = getOrderStatusCount('pending');
@@ -66,7 +66,17 @@ const Dashboard = () => {
 
   const totalOrders = orders.length;
   const totalIngredients = ingredients.length;
-  const totalRevenue = orders.reduce((sum, order) => sum + order.total, 0);
+  const totalRevenue = orders.reduce((sum, order) => sum + (order?.total || 0), 0);
+
+  if (ingredientsLoading || ordersLoading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="flex justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-persian-gold"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -197,31 +207,31 @@ const Dashboard = () => {
             ) : (
               <ul className="divide-y divide-gray-200">
                 {orders.slice(0, 5).map((order) => (
-                  <li key={order.id} className="px-4 py-4 sm:px-6">
+                  <li key={order?.id} className="px-4 py-4 sm:px-6">
                     <div className="flex items-center justify-between">
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-persian-gold truncate">
-                          سفارش #{order.id}
+                          سفارش #{order?.id}
                         </p>
                         <p className="mt-1 text-sm text-gray-500">
-                          ثبت شده در {formatDate(order.createdAt)}
+                          ثبت شده در {formatDate(order?.createdAt)}
                         </p>
                       </div>
                       <div className="mr-4 flex-shrink-0">
-                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(order.status)}`}>
-                          {getStatusText(order.status)}
+                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(order?.status)}`}>
+                          {getStatusText(order?.status)}
                         </span>
                       </div>
                     </div>
                     <div className="mt-2 sm:flex sm:justify-between">
                       <div className="sm:flex">
                         <p className="flex items-center text-sm text-gray-500">
-                          مجموع: ${order.total.toFixed(2)}
+                          مجموع: ${(order?.total || 0).toFixed(2)}
                         </p>
                       </div>
                       <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
                         <Link
-                          to={`/admin/orders/${order.id}`}
+                          to={`/admin/orders/${order?.id}`}
                           className="text-persian-gold hover:text-persian-red"
                         >
                           مشاهده جزئیات

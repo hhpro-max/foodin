@@ -1,11 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { CartProvider } from './contexts/CartContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import '@fontsource/vazirmatn';
+import { fetchCurrentUser } from './store/slices/authSlice';
 
 // Layouts
 import DefaultLayout from './layouts/DefaultLayout';
@@ -57,6 +58,15 @@ const GuestRoute = ({ children }) => {
 };
 
 function App() {
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      dispatch(fetchCurrentUser());
+    }
+  }, [dispatch]);
+
   return (
     <ThemeProvider>
       <CartProvider>

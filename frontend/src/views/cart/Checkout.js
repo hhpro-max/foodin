@@ -11,6 +11,7 @@ const Checkout = () => {
   const dispatch = useDispatch();
   const items = useSelector(selectCartItems);
   const total = useSelector(selectCartTotal);
+  const { isAuthenticated } = useSelector(state => state.auth);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -59,6 +60,11 @@ const Checkout = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!isAuthenticated) {
+      toast.error('برای ادامه لطفا وارد شوید.');
+      navigate('/login');
+      return;
+    }
     if (!validateForm()) return;
 
     setIsSubmitting(true);

@@ -147,7 +147,7 @@ const OrderList = () => {
                         {formatDate(order.createdAt)}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                        ${order.total.toFixed(2)}
+                        ${(order?.total ?? 0).toFixed(2)}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(order.status)}`}>

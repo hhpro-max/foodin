@@ -9,7 +9,7 @@ const ProductCard = ({ ingredient }) => {
 
   const handleAddToCart = () => {
     dispatch(addItem({
-      id: ingredient._id,
+      _id: ingredient._id,
       name: ingredient.name,
       price: ingredient.price,
       image: ingredient.image,

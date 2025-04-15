@@ -121,14 +121,14 @@ const OrderDetails = () => {
             <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
               <dt className="text-sm font-medium text-gray-500">{translations.fa.shippingAddress}</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                {order.shippingAddress.street}, {order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.zipCode}
+                {order.shippingAddress?.street || '-'}, {order.shippingAddress?.city || '-'}, {order.shippingAddress?.state || '-'}, {order.shippingAddress?.postalCode || '-'}
               </dd>
             </div>
             <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
               <dt className="text-sm font-medium text-gray-500">{translations.fa.items}</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                 <ul className="border border-gray-200 rounded-md divide-y divide-gray-200">
-                  {order.items.map((item) => (
+                  {(order.items || []).map((item) => (
                     <li key={item._id} className="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
                       <div className="w-0 flex-1 flex items-center">
                         <span className="ml-2 flex-1 w-0 truncate">
@@ -136,7 +136,7 @@ const OrderDetails = () => {
                         </span>
                       </div>
                       <div className="ml-4 flex-shrink-0">
-                        ${(item.price * item.quantity).toFixed(2)}
+                        {((item.price ?? 0) * (item.quantity ?? 0)).toFixed(2)}
                       </div>
                     </li>
                   ))}
@@ -146,25 +146,25 @@ const OrderDetails = () => {
             <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
               <dt className="text-sm font-medium text-gray-500">{translations.fa.subtotal}</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                ${order.subtotal.toFixed(2)}
+                ${(order.subtotal ?? 0).toFixed(2)}
               </dd>
             </div>
             <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
               <dt className="text-sm font-medium text-gray-500">{translations.fa.tax}</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                ${order.tax.toFixed(2)}
+                ${(order.tax ?? 0).toFixed(2)}
               </dd>
             </div>
             <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
               <dt className="text-sm font-medium text-gray-500">{translations.fa.shipping}</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                ${order.shipping.toFixed(2)}
+                ${(order.shipping ?? 0).toFixed(2)}
               </dd>
             </div>
             <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
               <dt className="text-sm font-medium text-gray-500">{translations.fa.total}</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                ${order.totalAmount.toFixed(2)}
+                ${(order.totalAmount ?? 0).toFixed(2)}
               </dd>
             </div>
           </dl>

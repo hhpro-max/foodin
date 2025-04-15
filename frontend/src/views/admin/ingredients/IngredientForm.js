@@ -5,6 +5,22 @@ import { addIngredient, editIngredient, fetchIngredientById } from '../../../sto
 import { toast } from 'react-toastify';
 import { translations } from '../../../config/translations';
 
+const CATEGORY_OPTIONS = [
+  { value: 'dairy', label: 'لبنیات' },
+  { value: 'meat', label: 'گوشت' },
+  { value: 'vegetables', label: 'سبزیجات' },
+  { value: 'spices', label: 'ادویه‌جات' },
+  { value: 'grains', label: 'غلات' },
+  { value: 'other', label: 'سایر' },
+];
+const UNIT_OPTIONS = [
+  { value: 'kg', label: 'کیلوگرم' },
+  { value: 'g', label: 'گرم' },
+  { value: 'l', label: 'لیتر' },
+  { value: 'ml', label: 'میلی‌لیتر' },
+  { value: 'piece', label: 'عدد' },
+];
+
 const IngredientForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -18,7 +34,10 @@ const IngredientForm = () => {
     name: '',
     price: '',
     stock: '',
-    description: ''
+    description: '',
+    category: '',
+    unit: '',
+    image: null,
   });
 
   const [formErrors, setFormErrors] = useState({});
@@ -30,7 +49,10 @@ const IngredientForm = () => {
           name: selectedIngredient.name,
           price: selectedIngredient.price,
           stock: selectedIngredient.stock,
-          description: selectedIngredient.description || ''
+          description: selectedIngredient.description || '',
+          category: selectedIngredient.category || '',
+          unit: selectedIngredient.unit || '',
+          image: selectedIngredient.image ? new File([selectedIngredient.image], selectedIngredient.name) : null,
         });
       } else {
         dispatch(fetchIngredientById(id));
@@ -54,10 +76,10 @@ const IngredientForm = () => {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, files } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: files ? files[0] : value
     }));
     // Clear error when user starts typing
     if (formErrors[name]) {
@@ -76,17 +98,21 @@ const IngredientForm = () => {
     }
 
     try {
-      const ingredientData = {
-        ...formData,
-        price: parseFloat(formData.price),
-        stock: parseInt(formData.stock)
-      };
-
+      const data = new FormData();
+      data.append('name', formData.name);
+      data.append('price', formData.price);
+      data.append('stock', formData.stock);
+      data.append('description', formData.description);
+      data.append('category', formData.category);
+      data.append('unit', formData.unit);
+      if (formData.image) {
+        data.append('image', formData.image);
+      }
       if (id) {
-        await dispatch(editIngredient({ id, data: ingredientData })).unwrap();
+        await dispatch(editIngredient({ id, data })).unwrap();
         toast.success('ماده غذایی با موفقیت بروزرسانی شد');
       } else {
-        await dispatch(addIngredient(ingredientData)).unwrap();
+        await dispatch(addIngredient(data)).unwrap();
         toast.success('ماده غذایی با موفقیت اضافه شد');
       }
       navigate('/admin/ingredients');
@@ -203,6 +229,72 @@ const IngredientForm = () => {
                       value={formData.description}
                       onChange={handleChange}
                       className="shadow-sm focus:ring-persian-blue focus:border-persian-blue block w-full sm:text-sm border-gray-300 rounded-md"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="category" className="block text-sm font-medium text-gray-700">
+                    دسته‌بندی
+                  </label>
+                  <div className="mt-1">
+                    <select
+                      name="category"
+                      id="category"
+                      value={formData.category}
+                      onChange={handleChange}
+                      className={`shadow-sm focus:ring-persian-blue focus:border-persian-blue block w-full sm:text-sm border-gray-300 rounded-md ${
+                        formErrors.category ? 'border-red-500' : ''
+                      }`}
+                    >
+                      <option value="">انتخاب کنید</option>
+                      {CATEGORY_OPTIONS.map(opt => (
+                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                      ))}
+                    </select>
+                    {formErrors.category && (
+                      <p className="mt-2 text-sm text-red-600">{formErrors.category}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="unit" className="block text-sm font-medium text-gray-700">
+                    واحد
+                  </label>
+                  <div className="mt-1">
+                    <select
+                      name="unit"
+                      id="unit"
+                      value={formData.unit}
+                      onChange={handleChange}
+                      className={`shadow-sm focus:ring-persian-blue focus:border-persian-blue block w-full sm:text-sm border-gray-300 rounded-md ${
+                        formErrors.unit ? 'border-red-500' : ''
+                      }`}
+                    >
+                      <option value="">انتخاب کنید</option>
+                      {UNIT_OPTIONS.map(opt => (
+                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                      ))}
+                    </select>
+                    {formErrors.unit && (
+                      <p className="mt-2 text-sm text-red-600">{formErrors.unit}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="image" className="block text-sm font-medium text-gray-700">
+                    تصویر (اختیاری)
+                  </label>
+                  <div className="mt-1">
+                    <input
+                      type="file"
+                      name="image"
+                      id="image"
+                      accept="image/*"
+                      onChange={handleChange}
+                      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-persian-gold file:text-white hover:file:bg-persian-red"
                     />
                   </div>
                 </div>
