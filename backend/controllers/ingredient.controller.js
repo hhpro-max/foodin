@@ -58,9 +58,10 @@ exports.getIngredient = async (req, res) => {
 // Create new ingredient
 exports.createIngredient = async (req, res) => {
   try {
+    // Store image as base64 string from req.body.image
     const ingredient = await Ingredient.create({
       ...req.body,
-      image: req.file ? `/uploads/${req.file.filename}` : null
+      image: req.body.image // base64 string
     });
     res.status(201).json({
       success: true,

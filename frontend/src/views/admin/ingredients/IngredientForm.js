@@ -92,32 +92,50 @@ const IngredientForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     if (!validateForm()) {
       return;
     }
 
-    try {
-      const data = new FormData();
-      data.append('name', formData.name);
-      data.append('price', formData.price);
-      data.append('stock', formData.stock);
-      data.append('description', formData.description);
-      data.append('category', formData.category);
-      data.append('unit', formData.unit);
-      if (formData.image) {
-        data.append('image', formData.image);
+    const submitData = {
+      ...formData,
+      price: parseFloat(formData.price),
+      stock: parseInt(formData.stock),
+    };
+
+    // If an image is selected, convert it to base64
+    if (formData.image) {
+      const file = formData.image;
+      const reader = new window.FileReader();
+      reader.onloadend = async () => {
+        submitData.image = reader.result.split(',')[1]; // Remove the data:image/...;base64, part
+        try {
+          if (id) {
+            await dispatch(editIngredient({ id, data: submitData })).unwrap();
+            toast.success('ماده غذایی با موفقیت بروزرسانی شد');
+          } else {
+            await dispatch(addIngredient(submitData)).unwrap();
+            toast.success('ماده غذایی با موفقیت اضافه شد');
+          }
+          navigate('/admin/ingredients');
+        } catch (error) {
+          toast.error('خطا در ذخیره ماده غذایی');
+        }
+      };
+      reader.readAsDataURL(file);
+    } else {
+      // No image selected
+      try {
+        if (id) {
+          await dispatch(editIngredient({ id, data: submitData })).unwrap();
+          toast.success('ماده غذایی با موفقیت بروزرسانی شد');
+        } else {
+          await dispatch(addIngredient(submitData)).unwrap();
+          toast.success('ماده غذایی با موفقیت اضافه شد');
+        }
+        navigate('/admin/ingredients');
+      } catch (error) {
+        toast.error('خطا در ذخیره ماده غذایی');
       }
-      if (id) {
-        await dispatch(editIngredient({ id, data })).unwrap();
-        toast.success('ماده غذایی با موفقیت بروزرسانی شد');
-      } else {
-        await dispatch(addIngredient(data)).unwrap();
-        toast.success('ماده غذایی با موفقیت اضافه شد');
-      }
-      navigate('/admin/ingredients');
-    } catch (error) {
-      toast.error('خطا در ذخیره ماده غذایی');
     }
   };
 

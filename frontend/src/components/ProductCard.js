@@ -21,7 +21,11 @@ const ProductCard = ({ ingredient }) => {
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
       <div className="relative pb-[56.25%]">
         <img
-          src={ingredient.image || '/placeholder-image.jpg'}
+          src={ingredient.image
+            ? ingredient.image.startsWith('data:')
+              ? ingredient.image
+              : `data:image/png;base64,${ingredient.image}`
+            : '/placeholder-image.jpg'}
           alt={ingredient.name}
           className="absolute top-0 left-0 w-full h-full object-cover"
         />

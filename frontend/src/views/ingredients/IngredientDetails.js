@@ -81,9 +81,13 @@ const IngredientDetails = () => {
         <div className="flex flex-col">
           <div className="w-full aspect-w-1 aspect-h-1 bg-gray-200 rounded-lg overflow-hidden xl:aspect-w-7 xl:aspect-h-8">
             <img
-              src={ingredient.image || 'https://via.placeholder.com/500x500?text=No+Image'}
+              src={ingredient.image
+                ? ingredient.image.startsWith('data:')
+                  ? ingredient.image
+                  : `data:image/png;base64,${ingredient.image}`
+                : '/placeholder-image.jpg'}
               alt={ingredient.name}
-              className="w-full h-full object-center object-cover"
+              className="w-full h-64 object-cover rounded-lg mb-4"
             />
           </div>
         </div>
