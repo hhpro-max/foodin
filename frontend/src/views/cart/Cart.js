@@ -65,13 +65,13 @@ const Cart = () => {
         <div className="flow-root">
           <ul className="-my-6 divide-y divide-gray-200">
             {items.map((item) => (
-              <li key={item.id} className="py-6 flex">
+              <li key={item._id} className="py-6 flex">
                 <div className="flex-shrink-0 w-24 h-24 border border-gray-200 rounded-md overflow-hidden">
                   <img
-                    src={imageErrors[item.id] ? DEFAULT_IMAGE : (item.image || DEFAULT_IMAGE)}
+                    src={imageErrors[item._id] ? DEFAULT_IMAGE : (item.image || DEFAULT_IMAGE)}
                     alt={item.name}
                     className="w-full h-full object-center object-cover"
-                    onError={() => handleImageError(item.id)}
+                    onError={() => handleImageError(item._id)}
                   />
                 </div>
 
@@ -85,12 +85,12 @@ const Cart = () => {
                   </div>
                   <div className="flex-1 flex items-end justify-between text-sm">
                     <div className="flex items-center">
-                      <label htmlFor={`quantity-${item.id}`} className="mr-2 text-gray-500">Qty</label>
+                      <label htmlFor={`quantity-${item._id}`} className="mr-2 text-gray-500">Qty</label>
                       <select
-                        id={`quantity-${item.id}`}
-                        name={`quantity-${item.id}`}
+                        id={`quantity-${item._id}`}
+                        name={`quantity-${item._id}`}
                         value={item.quantity}
-                        onChange={(e) => handleQuantityChange(item.id, e.target.value)}
+                        onChange={(e) => handleQuantityChange(item._id, e.target.value)}
                         className="rounded-md border border-gray-300 py-1.5 text-base leading-5 font-medium text-gray-700 text-left shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                       >
                         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
@@ -104,7 +104,7 @@ const Cart = () => {
                     <div className="flex">
                       <button
                         type="button"
-                        onClick={() => handleRemoveItem(item.id)}
+                        onClick={() => handleRemoveItem(item._id)}
                         className="font-medium text-indigo-600 hover:text-indigo-500"
                       >
                         Remove

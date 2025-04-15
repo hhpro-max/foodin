@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchIngredientById } from '../../store/slices/ingredientSlice';
 import { addItem } from '../../store/slices/cartSlice';
+import { toast } from 'react-toastify';
 
 const IngredientDetails = () => {
   const { id } = useParams();
@@ -12,18 +13,20 @@ const IngredientDetails = () => {
 
   useEffect(() => {
     if (id) {
+      console.log('Fetching ingredient with ID:', id);
       dispatch(fetchIngredientById(id));
     }
   }, [dispatch, id]);
 
   const handleAddToCart = () => {
-    if (ingredient) {
+    if (ingredient && ingredient.stock > 0) {
       dispatch(addItem({
         _id: ingredient._id,
         name: ingredient.name,
-        price: ingredient.price,
+        price: parseFloat(ingredient.price),
         quantity: parseInt(quantity)
       }));
+      toast.success(`${quantity} ${ingredient.name} added to cart`);
     }
   };
 
@@ -67,6 +70,9 @@ const IngredientDetails = () => {
     );
   }
 
+  const isAvailable = ingredient.stock > 0;
+  const hasEnoughStock = ingredient.stock >= quantity;
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="lg:grid lg:grid-cols-2 lg:gap-x-8 lg:items-start">
@@ -86,15 +92,22 @@ const IngredientDetails = () => {
           <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">{ingredient.name}</h1>
           <div className="mt-3">
             <h2 className="sr-only">Ingredient information</h2>
-            <p className="text-3xl text-gray-900">${ingredient.price.toFixed(2)}</p>
+            <p className="text-3xl text-gray-900">
+              ${typeof ingredient.price === 'number' ? ingredient.price.toFixed(2) : '0.00'}
+            </p>
           </div>
 
           <div className="mt-6">
             <h3 className="sr-only">Description</h3>
             <div className="text-base text-gray-700 space-y-6">
-              <p>Category: {ingredient.category}</p>
-              <p>Stock: {ingredient.stock} units</p>
-              <p>Status: <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${ingredient.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>{ingredient.status}</span></p>
+              {ingredient.description && (
+                <p className="text-gray-500">{ingredient.description}</p>
+              )}
+              <p>Category: {ingredient.category || 'N/A'}</p>
+              <p>Stock: {ingredient.stock || 0} units</p>
+              <p>Availability: <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${isAvailable ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                {isAvailable ? 'In Stock' : 'Out of Stock'}
+              </span></p>
             </div>
           </div>
 
@@ -106,11 +119,12 @@ const IngredientDetails = () => {
                 name="quantity"
                 className="rounded-md border border-gray-300 py-1.5 text-base leading-5 font-medium text-gray-700 text-left shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
+                onChange={(e) => setQuantity(parseInt(e.target.value))}
+                disabled={!isAvailable}
               >
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-                  <option key={num} value={num}>
-                    {num}
+                {[...Array(Math.min(10, ingredient.stock))].map((_, index) => (
+                  <option key={index + 1} value={index + 1}>
+                    {index + 1}
                   </option>
                 ))}
               </select>
@@ -121,19 +135,19 @@ const IngredientDetails = () => {
             <button
               type="button"
               onClick={handleAddToCart}
-              disabled={ingredient.status !== 'active' || ingredient.stock < quantity}
+              disabled={!isAvailable || !hasEnoughStock}
               className={`w-full bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
-                ingredient.status !== 'active' || ingredient.stock < quantity ? 'opacity-50 cursor-not-allowed' : ''
+                !isAvailable || !hasEnoughStock ? 'opacity-50 cursor-not-allowed' : ''
               }`}
             >
               Add to cart
             </button>
           </div>
 
-          {ingredient.status !== 'active' && (
-            <p className="mt-2 text-sm text-red-600">This ingredient is currently unavailable.</p>
+          {!isAvailable && (
+            <p className="mt-2 text-sm text-red-600">This ingredient is currently out of stock.</p>
           )}
-          {ingredient.status === 'active' && ingredient.stock < quantity && (
+          {isAvailable && !hasEnoughStock && (
             <p className="mt-2 text-sm text-red-600">Not enough stock available. Only {ingredient.stock} units left.</p>
           )}
         </div>

@@ -46,6 +46,14 @@ const DefaultLayout = () => {
                 >
                   Ingredients
                 </Link>
+                {isAuthenticated && user?.role === 'admin' && (
+                  <Link
+                    to="/admin/ingredients/new"
+                    className="bg-yellow-400 text-yellow-900 hover:bg-yellow-300 px-3 py-1 rounded-md text-sm font-medium inline-flex items-center"
+                  >
+                    Add Ingredient
+                  </Link>
+                )}
                 {isAuthenticated && (
                   <Link
                     to="/orders"
