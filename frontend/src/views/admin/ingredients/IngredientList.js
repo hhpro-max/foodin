@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchIngredients, removeIngredient } from '../../../store/slices/ingredientSlice';
 
-const IngredientList = () => {
+const AdminIngredientList = () => {
   const dispatch = useDispatch();
-  const { ingredients, loading, error } = useSelector((state) => state.ingredients);
+  const { items: ingredients, loading, error } = useSelector((state) => state.ingredients);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedIngredient, setSelectedIngredient] = useState(null);
 
@@ -94,7 +94,7 @@ const IngredientList = () => {
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
                   {ingredients.map((ingredient) => (
-                    <tr key={ingredient.id}>
+                    <tr key={ingredient._id}>
                       <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                         {ingredient.name}
                       </td>
@@ -106,7 +106,7 @@ const IngredientList = () => {
                       </td>
                       <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                         <Link
-                          to={`/admin/ingredients/${ingredient.id}/edit`}
+                          to={`/admin/ingredients/${ingredient._id}/edit`}
                           className="text-indigo-600 hover:text-indigo-900 mr-4"
                         >
                           Edit
@@ -177,4 +177,4 @@ const IngredientList = () => {
   );
 };
 
-export default IngredientList; 
+export default AdminIngredientList; 

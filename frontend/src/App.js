@@ -14,6 +14,7 @@ import Home from './views/Home';
 import Login from './views/auth/Login';
 import Register from './views/auth/Register';
 import IngredientDetails from './views/ingredients/IngredientDetails';
+import IngredientList from './views/ingredients/IngredientList';
 import Cart from './views/cart/Cart';
 import Checkout from './views/cart/Checkout';
 import OrderHistory from './views/orders/OrderHistory';
@@ -23,7 +24,7 @@ import TestPage from './views/TestPage';
 
 // Admin views
 import AdminDashboard from './views/admin/Dashboard';
-import IngredientList from './views/admin/ingredients/IngredientList';
+import AdminIngredientList from './views/admin/ingredients/IngredientList';
 import IngredientForm from './views/admin/ingredients/IngredientForm';
 import OrderList from './views/admin/orders/OrderList';
 
@@ -72,6 +73,7 @@ function App() {
                 <Register />
               </GuestRoute>
             } />
+            <Route path="ingredients" element={<IngredientList />} />
             <Route path="ingredients/:id" element={<IngredientDetails />} />
             <Route path="cart" element={
               <PrivateRoute>
@@ -108,7 +110,7 @@ function App() {
             </PrivateRoute>
           }>
             <Route index element={<AdminDashboard />} />
-            <Route path="ingredients" element={<IngredientList />} />
+            <Route path="ingredients" element={<AdminIngredientList />} />
             <Route path="ingredients/new" element={<IngredientForm />} />
             <Route path="ingredients/:id/edit" element={<IngredientForm />} />
             <Route path="orders" element={<OrderList />} />
