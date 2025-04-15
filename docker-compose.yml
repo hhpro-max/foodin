@@ -1,0 +1,82 @@
+services:
+  mongodb:
+    image: mongo:6.0
+    container_name: foodin-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password123
+    restart: unless-stopped
+    networks:
+      - foodin-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: foodin-backend
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+    environment:
+      - NODE_ENV=development
+      - PORT=5000
+      - MONGODB_URI=mongodb://admin:password123@mongodb:27017/foodin?authSource=admin
+      - JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
+      - JWT_EXPIRES_IN=7d
+      - UPLOAD_PATH=uploads
+      - MAX_FILE_SIZE=5242880
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+      - ./backend/uploads:/usr/src/app/uploads
+    restart: unless-stopped
+    networks:
+      - foodin-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: foodin-frontend
+    ports:
+      - "3001:3001"
+    depends_on:
+      - backend
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+      - REACT_APP_API_URL=http://localhost:5000/api
+      - REACT_APP_UPLOAD_URL=http://localhost:5000/uploads
+    volumes:
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+    networks:
+      - foodin-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  foodin-network:
+    driver: bridge
+
+volumes:
+  mongodb_data: 
