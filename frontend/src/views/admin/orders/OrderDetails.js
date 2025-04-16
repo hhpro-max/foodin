@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchOrderById } from '../../store/slices/orderSlice';
-import { translations } from '../../config/translations';
+import { fetchOrderById } from '../../../store/slices/orderSlice';
+import { translations } from '../../../config/translations';
 
-const OrderDetails = () => {
+const AdminOrderDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const { selectedOrder: order, loading, error } = useSelector((state) => state.orders);
@@ -70,8 +70,8 @@ const OrderDetails = () => {
           <span className="block sm:inline"> {error.message || error}</span>
         </div>
         <div className="mt-4">
-          <Link to="/orders" className="text-indigo-600 hover:text-indigo-900">
-            Back to Orders
+          <Link to="/admin/orders" className="text-indigo-600 hover:text-indigo-900">
+            بازگشت به سفارش‌ها
           </Link>
         </div>
       </div>
@@ -86,8 +86,8 @@ const OrderDetails = () => {
           <span className="block sm:inline"> {translations.fa.orderNotFound}</span>
         </div>
         <div className="mt-4">
-          <Link to="/orders" className="text-indigo-600 hover:text-indigo-900">
-            Back to Orders
+          <Link to="/admin/orders" className="text-indigo-600 hover:text-indigo-900">
+            بازگشت به سفارش‌ها
           </Link>
         </div>
       </div>
@@ -97,15 +97,14 @@ const OrderDetails = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-8">
-        <Link to="/orders" className="text-indigo-600 hover:text-indigo-900">
-          &larr; Back to Orders
+        <Link to="/admin/orders" className="text-indigo-600 hover:text-indigo-900">
+          &larr; بازگشت به سفارش‌ها
         </Link>
       </div>
-      
       <div className="bg-white shadow overflow-hidden sm:rounded-lg">
         <div className="px-4 py-5 sm:px-6">
           <h3 className="text-lg leading-6 font-medium text-gray-900">
-            {translations.fa.orderDetails} #{order._id}
+            {translations.fa.orderDetails} #{order.id || order._id}
           </h3>
           <p className="mt-1 max-w-2xl text-sm text-gray-500">
             {translations.fa.orderDate}: {formatDate(order.createdAt)}
@@ -119,13 +118,19 @@ const OrderDetails = () => {
         <div className="border-t border-gray-200">
           <dl>
             <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="text-sm font-medium text-gray-500">{translations.fa.shippingAddress}</dt>
+              <dt className="text-sm font-medium text-gray-500">مشتری</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                {order.shippingAddress?.street || '-'}, {order.shippingAddress?.city || '-'}, {order.shippingAddress?.state || '-'}, {order.shippingAddress?.postalCode || '-'}
+                {order.customerName || order.user?.name || '-'} ({order.user?.email || '-'})
               </dd>
             </div>
             <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="text-sm font-medium text-gray-500">{translations.fa.items}</dt>
+              <dt className="text-sm font-medium text-gray-500">آدرس ارسال</dt>
+              <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                {order.shippingAddress?.street || '-'}, {order.shippingAddress?.city || '-'}, {order.shippingAddress?.state || '-'}, {order.shippingAddress?.zipCode || '-'}
+              </dd>
+            </div>
+            <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt className="text-sm font-medium text-gray-500">آیتم‌ها</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                 <ul className="border border-gray-200 rounded-md divide-y divide-gray-200">
                   {(order.items || []).map((item) => (
@@ -144,9 +149,15 @@ const OrderDetails = () => {
               </dd>
             </div>
             <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="text-sm font-medium text-gray-500">{translations.fa.total}</dt>
+              <dt className="text-sm font-medium text-gray-500">جمع کل</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                ${(order.totalAmount ?? 0).toFixed(2)}
+                ${(order.total || order.totalAmount || 0).toFixed(2)}
+              </dd>
+            </div>
+            <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt className="text-sm font-medium text-gray-500">وضعیت پرداخت</dt>
+              <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                {order.paymentStatus || '-'}
               </dd>
             </div>
           </dl>
@@ -156,4 +167,4 @@ const OrderDetails = () => {
   );
 };
 
-export default OrderDetails; 
+export default AdminOrderDetails; 

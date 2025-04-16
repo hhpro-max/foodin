@@ -9,7 +9,7 @@ const orderService = {
 
   getOrderById: async (id) => {
     const response = await api.get(ORDER_ENDPOINTS.GET_ONE(id));
-    return response.data;
+    return response.data.data;
   },
 
   getUserOrders: async () => {

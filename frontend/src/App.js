@@ -30,6 +30,7 @@ import AdminDashboard from './views/admin/Dashboard';
 import AdminIngredientList from './views/admin/ingredients/IngredientList';
 import IngredientForm from './views/admin/ingredients/IngredientForm';
 import OrderList from './views/admin/orders/OrderList';
+import AdminOrderDetails from './views/admin/orders/OrderDetails';
 
 // Auth guard component
 const PrivateRoute = ({ children, requiresAdmin = false }) => {
@@ -132,6 +133,7 @@ function App() {
               <Route path="ingredients/new" element={<IngredientForm />} />
               <Route path="ingredients/:id/edit" element={<IngredientForm />} />
               <Route path="orders" element={<OrderList />} />
+              <Route path="orders/:id" element={<AdminOrderDetails />} />
             </Route>
           </Routes>
         </Router>

@@ -82,7 +82,16 @@ const orderSlice = createSlice({
       })
       .addCase(fetchOrders.fulfilled, (state, action) => {
         state.loading = false;
-        state.items = action.payload;
+        // Map backend fields to frontend expected fields
+        state.items = (action.payload.data || action.payload).map(order => ({
+          id: order._id,
+          customerName: order.user?.name || '-',
+          createdAt: order.createdAt,
+          total: order.totalAmount,
+          status: order.status,
+          // Add any other fields needed for details page
+          ...order
+        }));
       })
       .addCase(fetchOrders.rejected, (state, action) => {
         state.loading = false;
@@ -95,7 +104,16 @@ const orderSlice = createSlice({
       })
       .addCase(fetchOrderById.fulfilled, (state, action) => {
         state.loading = false;
-        state.selectedOrder = action.payload;
+        // Map backend fields to frontend expected fields
+        const order = action.payload;
+        state.selectedOrder = order ? {
+          id: order._id,
+          customerName: order.user?.name || '-',
+          createdAt: order.createdAt,
+          total: order.totalAmount,
+          status: order.status,
+          ...order
+        } : null;
       })
       .addCase(fetchOrderById.rejected, (state, action) => {
         state.loading = false;
@@ -121,9 +139,18 @@ const orderSlice = createSlice({
       })
       .addCase(updateOrder.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.items.findIndex(item => item._id === action.payload._id);
+        // Map backend fields to frontend expected fields
+        const updatedOrder = {
+          id: action.payload.data?._id || action.payload._id,
+          customerName: action.payload.data?.user?.name || action.payload.user?.name || '-',
+          createdAt: action.payload.data?.createdAt || action.payload.createdAt,
+          total: action.payload.data?.totalAmount || action.payload.totalAmount,
+          status: action.payload.data?.status || action.payload.status,
+          ...((action.payload.data) ? action.payload.data : action.payload)
+        };
+        const index = state.items.findIndex(item => item.id === updatedOrder.id);
         if (index !== -1) {
-          state.items[index] = action.payload;
+          state.items[index] = updatedOrder;
         }
       })
       .addCase(updateOrder.rejected, (state, action) => {

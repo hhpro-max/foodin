@@ -23,7 +23,7 @@ export const ORDER_ENDPOINTS = {
   GET_USER_ORDERS: `${API_BASE_URL}/orders`,
   GET_ONE: (id) => `${API_BASE_URL}/orders/${id}`,
   CREATE: `${API_BASE_URL}/orders`,
-  UPDATE_STATUS: (id) => `${API_BASE_URL}/orders/${id}/status`,
+  UPDATE_STATUS: (id) => `${API_BASE_URL}/orders/${id}`,
   CANCEL: (id) => `${API_BASE_URL}/orders/${id}/cancel`,
 };
 
