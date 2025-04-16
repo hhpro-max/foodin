@@ -38,17 +38,17 @@ const Cart = () => {
   if (items.length === 0) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">Shopping Cart</h1>
+        <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">سبد خرید</h1>
         <div className="mt-8">
           <div className="bg-white shadow overflow-hidden sm:rounded-lg">
             <div className="px-4 py-5 sm:p-6">
-              <p className="text-gray-500">Your cart is empty.</p>
+              <p className="text-gray-500">سبد خرید شما خالی است.</p>
               <div className="mt-6">
                 <Link
                   to="/"
                   className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
-                  Continue Shopping
+                  ادامه خرید
                 </Link>
               </div>
             </div>
@@ -60,7 +60,7 @@ const Cart = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">Shopping Cart</h1>
+      <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">سبد خرید</h1>
       <div className="mt-8">
         <div className="flow-root">
           <ul className="-my-6 divide-y divide-gray-200">
@@ -81,11 +81,11 @@ const Cart = () => {
                       <h3>{item.name}</h3>
                       <p className="ml-4">${(Number(item.price || 0) * item.quantity).toFixed(2)}</p>
                     </div>
-                    <p className="mt-1 text-sm text-gray-500">${Number(item.price || 0).toFixed(2)} each</p>
+                    <p className="mt-1 text-sm text-gray-500">${Number(item.price || 0).toFixed(2)} برای هر عدد</p>
                   </div>
                   <div className="flex-1 flex items-end justify-between text-sm">
                     <div className="flex items-center">
-                      <label htmlFor={`quantity-${item._id}`} className="mr-2 text-gray-500">Qty</label>
+                      <label htmlFor={`quantity-${item._id}`} className="mr-2 text-gray-500">تعداد</label>
                       <select
                         id={`quantity-${item._id}`}
                         name={`quantity-${item._id}`}
@@ -107,7 +107,7 @@ const Cart = () => {
                         onClick={() => handleRemoveItem(item._id)}
                         className="font-medium text-indigo-600 hover:text-indigo-500"
                       >
-                        Remove
+                        حذف
                       </button>
                     </div>
                   </div>
@@ -122,15 +122,15 @@ const Cart = () => {
             <div className="flow-root">
               <dl className="-my-4 text-sm divide-y divide-gray-200">
                 <div className="py-4 flex items-center justify-between">
-                  <dt className="text-gray-600">Subtotal</dt>
+                  <dt className="text-gray-600">جمع جزء</dt>
                   <dd className="font-medium text-gray-900">${Number(subtotal).toFixed(2)}</dd>
                 </div>
                 <div className="py-4 flex items-center justify-between">
-                  <dt className="text-gray-600">Tax</dt>
+                  <dt className="text-gray-600">مالیات</dt>
                   <dd className="font-medium text-gray-900">${Number(tax).toFixed(2)}</dd>
                 </div>
                 <div className="py-4 flex items-center justify-between">
-                  <dt className="text-base font-medium text-gray-900">Total</dt>
+                  <dt className="text-base font-medium text-gray-900">مجموع</dt>
                   <dd className="text-base font-medium text-gray-900">${Number(total).toFixed(2)}</dd>
                 </div>
               </dl>
@@ -143,13 +143,13 @@ const Cart = () => {
               onClick={handleClearCart}
               className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
             >
-              Clear Cart
+              پاک کردن سبد
             </button>
             <Link
               to="/checkout"
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              Proceed to Checkout
+              تکمیل خرید
             </Link>
           </div>
         </div>
