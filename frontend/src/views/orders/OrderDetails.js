@@ -52,6 +52,32 @@ const OrderDetails = () => {
     }
   };
 
+  const getPaymentMethodText = (method) => {
+    switch (method) {
+      case 'pay_in_place':
+        return 'پرداخت در محل';
+      case 'online_payment':
+        return 'پرداخت آنلاین';
+      case 'credit_payment':
+        return 'پرداخت اعتباری';
+      default:
+        return method || 'نامشخص';
+    }
+  };
+
+  const getPaymentStatusText = (status) => {
+    switch (status) {
+      case 'pending':
+        return 'در انتظار پرداخت';
+      case 'completed':
+        return 'پرداخت شده';
+      case 'failed':
+        return 'پرداخت ناموفق';
+      default:
+        return status || 'نامشخص';
+    }
+  };
+
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -121,7 +147,19 @@ const OrderDetails = () => {
             <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
               <dt className="text-sm font-medium text-gray-500">{translations.fa.shippingAddress}</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                {order.shippingAddress?.street || '-'}, {order.shippingAddress?.city || '-'}, {order.shippingAddress?.state || '-'}, {order.shippingAddress?.postalCode || '-'}
+                {order.shippingAddress?.name || '-'}, {order.shippingAddress?.address || '-'}, {order.shippingAddress?.city || '-'}, {order.shippingAddress?.state || '-'}, {order.shippingAddress?.zipCode || '-'}
+              </dd>
+            </div>
+            <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt className="text-sm font-medium text-gray-500">روش پرداخت</dt>
+              <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                {getPaymentMethodText(order.paymentMethod)}
+              </dd>
+            </div>
+            <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt className="text-sm font-medium text-gray-500">وضعیت پرداخت</dt>
+              <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                {getPaymentStatusText(order.paymentStatus)}
               </dd>
             </div>
             <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">

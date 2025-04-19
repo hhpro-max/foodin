@@ -19,10 +19,8 @@ const Checkout = () => {
     city: '',
     state: '',
     zipCode: '',
-    cardNumber: '',
-    expiryDate: '',
-    cvv: '',
   });
+  const [paymentMethod, setPaymentMethod] = useState('pay_in_place'); // Default payment method
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -41,6 +39,10 @@ const Checkout = () => {
     }
   };
 
+  const handlePaymentMethodChange = (method) => {
+    setPaymentMethod(method);
+  };
+
   const validateForm = () => {
     const newErrors = {};
     if (!formData.name) newErrors.name = 'نام الزامی است';
@@ -50,9 +52,6 @@ const Checkout = () => {
     if (!formData.city) newErrors.city = 'شهر الزامی است';
     if (!formData.state) newErrors.state = 'استان الزامی است';
     if (!formData.zipCode) newErrors.zipCode = 'کد پستی الزامی است';
-    if (!formData.cardNumber) newErrors.cardNumber = 'شماره کارت الزامی است';
-    if (!formData.expiryDate) newErrors.expiryDate = 'تاریخ انقضا الزامی است';
-    if (!formData.cvv) newErrors.cvv = 'CVV الزامی است';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -84,6 +83,8 @@ const Checkout = () => {
           state: formData.state,
           zipCode: formData.zipCode,
         },
+        paymentMethod: paymentMethod,
+        paymentStatus: paymentMethod === 'pay_in_place' ? 'pending' : 'pending',
       };
 
       await dispatch(createNewOrder(orderData)).unwrap();
@@ -248,66 +249,64 @@ const Checkout = () => {
 
           <div className="bg-white shadow overflow-hidden sm:rounded-lg">
             <div className="px-4 py-5 sm:p-6">
-              <h2 className="text-lg font-medium text-gray-900">اطلاعات پرداخت</h2>
-              <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-                <div className="sm:col-span-6">
-                  <label htmlFor="cardNumber" className="block text-sm font-medium text-gray-700">
-                    شماره کارت
+              <h2 className="text-lg font-medium text-gray-900">روش پرداخت</h2>
+              <div className="mt-6 space-y-4">
+                <div className="flex items-center">
+                  <input
+                    id="pay_in_place"
+                    name="payment_method"
+                    type="radio"
+                    checked={paymentMethod === 'pay_in_place'}
+                    onChange={() => handlePaymentMethodChange('pay_in_place')}
+                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                  />
+                  <label htmlFor="pay_in_place" className="ml-3 block text-sm font-medium text-gray-700">
+                    پرداخت در محل
                   </label>
-                  <div className="mt-1">
-                    <input
-                      type="text"
-                      name="cardNumber"
-                      id="cardNumber"
-                      value={formData.cardNumber}
-                      onChange={handleChange}
-                      className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                        errors.cardNumber ? 'border-red-300' : ''
-                      }`}
-                    />
-                    {errors.cardNumber && <p className="mt-1 text-sm text-red-600">{errors.cardNumber}</p>}
-                  </div>
                 </div>
-
-                <div className="sm:col-span-3">
-                  <label htmlFor="expiryDate" className="block text-sm font-medium text-gray-700">
-                    تاریخ انقضا
+                <div className="flex items-center">
+                  <input
+                    id="online_payment"
+                    name="payment_method"
+                    type="radio"
+                    checked={paymentMethod === 'online_payment'}
+                    onChange={() => handlePaymentMethodChange('online_payment')}
+                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                  />
+                  <label htmlFor="online_payment" className="ml-3 block text-sm font-medium text-gray-700">
+                    پرداخت آنلاین
                   </label>
-                  <div className="mt-1">
-                    <input
-                      type="text"
-                      name="expiryDate"
-                      id="expiryDate"
-                      placeholder="ماه/سال"
-                      value={formData.expiryDate}
-                      onChange={handleChange}
-                      className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                        errors.expiryDate ? 'border-red-300' : ''
-                      }`}
-                    />
-                    {errors.expiryDate && <p className="mt-1 text-sm text-red-600">{errors.expiryDate}</p>}
-                  </div>
                 </div>
-
-                <div className="sm:col-span-3">
-                  <label htmlFor="cvv" className="block text-sm font-medium text-gray-700">
-                    CVV
+                <div className="flex items-center">
+                  <input
+                    id="credit_payment"
+                    name="payment_method"
+                    type="radio"
+                    checked={paymentMethod === 'credit_payment'}
+                    onChange={() => handlePaymentMethodChange('credit_payment')}
+                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                  />
+                  <label htmlFor="credit_payment" className="ml-3 block text-sm font-medium text-gray-700">
+                    پرداخت اعتباری
                   </label>
-                  <div className="mt-1">
-                    <input
-                      type="text"
-                      name="cvv"
-                      id="cvv"
-                      value={formData.cvv}
-                      onChange={handleChange}
-                      className={`shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ${
-                        errors.cvv ? 'border-red-300' : ''
-                      }`}
-                    />
-                    {errors.cvv && <p className="mt-1 text-sm text-red-600">{errors.cvv}</p>}
-                  </div>
                 </div>
               </div>
+              
+              {paymentMethod === 'online_payment' && (
+                <div className="mt-4 p-4 bg-yellow-50 rounded-md">
+                  <p className="text-sm text-yellow-700">
+                    پرداخت آنلاین به زودی در دسترس خواهد بود.
+                  </p>
+                </div>
+              )}
+              
+              {paymentMethod === 'credit_payment' && (
+                <div className="mt-4 p-4 bg-yellow-50 rounded-md">
+                  <p className="text-sm text-yellow-700">
+                    پرداخت اعتباری به زودی در دسترس خواهد بود.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
@@ -342,7 +341,7 @@ const Checkout = () => {
             <div className="mt-6">
               <button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || paymentMethod !== 'pay_in_place'}
                 className="w-full flex justify-center items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? 'در حال پردازش...' : 'ثبت سفارش'}

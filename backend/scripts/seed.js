@@ -16,9 +16,9 @@ const seedData = async () => {
 
     // Create admin user
     const adminUser = await User.create({
-      name: 'Admin User',
+      name: 'Ali shafie',
       email: 'admin@foodin.com',
-      password: 'admin123',
+      password: 'admin',
       role: 'admin',
       address: {
         street: '123 Admin St',
@@ -31,9 +31,9 @@ const seedData = async () => {
 
     // Create regular user
     const regularUser = await User.create({
-      name: 'Regular User',
-      email: 'user@foodin.com',
-      password: 'user123',
+      name: 'narges',
+      email: 'narges@foodin.com',
+      password: 'user',
       role: 'user',
       address: {
         street: '456 User St',
@@ -47,17 +47,17 @@ const seedData = async () => {
     // Create test ingredients
     const ingredients = await Ingredient.create([
       {
-        name: 'Fresh Tomatoes',
-        description: 'Ripe, juicy tomatoes perfect for salads and cooking',
+        name: 'پنیر پیتزا',
+        description: 'توضیحاتی در دسترس نیست',
         price: 2.99,
-        category: 'vegetables',
+        category: 'dairy',
         image: 'tomatoes.jpg',
         stock: 100,
         unit: 'kg'
       },
       {
-        name: 'Chicken Breast',
-        description: 'Fresh, boneless chicken breast',
+        name: 'گوشت مرغ',
+        description: 'توضیحاتی در دسترس نیست',
         price: 8.99,
         category: 'meat',
         image: 'chicken.jpg',
@@ -65,8 +65,8 @@ const seedData = async () => {
         unit: 'kg'
       },
       {
-        name: 'Olive Oil',
-        description: 'Extra virgin olive oil from Italy',
+        name: 'روغن زیتون',
+        description: 'توضیحاتی در دسترس نیست',
         price: 12.99,
         category: 'other',
         image: 'olive-oil.jpg',
@@ -74,10 +74,10 @@ const seedData = async () => {
         unit: 'l'
       },
       {
-        name: 'Black Pepper',
-        description: 'Freshly ground black pepper',
+        name: 'گوشت گوسفند',
+        description: 'توضیحاتی در دسترس نیست',
         price: 4.99,
-        category: 'spices',
+        category: 'meat',
         image: 'pepper.jpg',
         stock: 200,
         unit: 'g'

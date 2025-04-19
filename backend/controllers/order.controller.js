@@ -4,7 +4,7 @@ const Ingredient = require('../models/ingredient.model');
 // Create new order
 exports.createOrder = async (req, res) => {
   try {
-    const { items, shippingAddress } = req.body;
+    const { items, shippingAddress, paymentMethod, paymentStatus } = req.body;
 
     // Calculate total amount and validate stock
     let totalAmount = 0;
@@ -36,7 +36,9 @@ exports.createOrder = async (req, res) => {
       user: req.user.id,
       items,
       totalAmount,
-      shippingAddress
+      shippingAddress,
+      paymentMethod: paymentMethod || 'pay_in_place',
+      paymentStatus: paymentStatus || 'pending'
     });
 
     res.status(201).json({

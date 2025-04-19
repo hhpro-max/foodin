@@ -32,11 +32,18 @@ const orderSchema = new mongoose.Schema({
     default: 'pending'
   },
   shippingAddress: {
-    street: String,
+    name: String,
+    email: String,
+    address: String,
     city: String,
     state: String,
     zipCode: String,
     country: String
+  },
+  paymentMethod: {
+    type: String,
+    enum: ['pay_in_place', 'online_payment', 'credit_payment'],
+    default: 'pay_in_place'
   },
   paymentStatus: {
     type: String,
